@@ -1,0 +1,68 @@
+#3.7 LAB - Nested aggregates (Sakila)
+Refer to the film and inventory tables of the Sakila database. The tables in this lab have the same columns and data types but fewer rows.
+
+Write a query that lists the titles of films with the fewest rows in the inventory table.
+
+This query requires a subquery that computes the minimum of counts by film_id:
+
+SELECT MIN(count_film_id) 
+FROM ( SELECT COUNT(film_id) AS count_film_id
+       FROM inventory
+       GROUP BY film_id ) 
+AS temp_table;
+
+solution:
+
+    STEPS:
+    ##1-find all films on inventory
+
+        SELECT film.film_id, film.title
+        FROM film
+        RIGHT JOIN inventory ON film.film_id = inventory.film_id
+        ORDER BY film.title;
+
+    2-Group By film.film_id and Count it
+    SELECT film.film_id, film.title,COUNT(*)
+    FROM film
+    RIGHT JOIN inventory ON film.film_id = inventory.film_id
+    GROUP BY film.film_id
+    ORDER BY film.film_id;
+
+    ##3-Filter only those with the minimal rows in inventory (the subquery given returns 2, you can try out any number for testing)
+    
+    SELECT film.film_id, film.title,COUNT(*) AS C
+    FROM film
+    RIGHT JOIN inventory ON film.film_id = inventory.film_id
+    GROUP BY film.film_id
+    HAVING C = 2
+    ORDER BY film.film_id;
+
+   ##4-Replace 2, with the subquery given in the exercise:
+    
+	SELECT film.film_id, film.title,COUNT(*) AS C
+    FROM film
+    RIGHT JOIN inventory ON film.film_id = inventory.film_id
+    GROUP BY film.film_id
+    HAVING C = 
+      ( SELECT MIN(count_film_id) FROM 
+      ( SELECT COUNT(film_id) AS count_film_id
+        FROM inventory
+        GROUP BY film_id ) 
+    AS temp_table )
+    ORDER BY film.film_id;
+    
+    ##5-Remove film_id and count from the final result to match what the lab requires.
+
+    SELECT film.title
+    FROM film
+    RIGHT JOIN inventory ON film.film_id = inventory.film_id
+    GROUP BY film.film_id
+    HAVING COUNT(*) = 
+      ( SELECT MIN(count_film_id) FROM 
+      ( SELECT COUNT(film_id) AS count_film_id
+        FROM inventory
+        GROUP BY film_id ) 
+    AS temp_table )
+    ORDER BY film.film_id;
+    
+    
