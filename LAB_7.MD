@@ -94,7 +94,7 @@
 	
 ## 7.9 LAB - Create LessonSchedule table with FK constraints
 
-CREATE TABLE LessonSchedule (
+	CREATE TABLE LessonSchedule (
 	   HorseID SMALLINT UNSIGNED NOT NULL,
 	   StudentID SMALLINT UNSIGNED,
 	   LessonDateTime DATETIME NOT NULL,
